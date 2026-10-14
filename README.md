@@ -66,14 +66,20 @@ BASE_URL=https://www.saucedemo.com npm test
 │   │   └── pages.fixture.ts  # Inyecta los Page Objects en los tests
 │   └── data/                 # Datos de prueba
 │       ├── users.ts
-│       └── products.ts
+│       ├── products.ts
+│       └── messages.ts       # Mensajes de error esperados
 └── tests/
+    ├── auth/
+    │   └── login.spec.ts
     └── cart/
         └── add-to-cart.spec.ts
 ```
 
 ## Escenarios
 
+- **Login › standard user can log in with valid credentials**: inicia sesión con `standard_user` y verifica que llega al inventario (*Products*) sin mensaje de error.
+- **Login › login fails with wrong password**: `standard_user` con contraseña errónea; verifica el error *"Username and password do not match any user in this service"* y que sigue en la pantalla de login.
+- **Login › login fails with locked out user**: `locked_out_user`; verifica el error *"Sorry, this user has been locked out."* y que sigue en la pantalla de login.
 - **Cart › standard user can add a t-shirt to the cart**: inicia sesión con `standard_user`, añade la *Sauce Labs Bolt T-Shirt* al carrito y verifica que el contador del carrito muestra `1` y que el botón cambia a *Remove*.
 
 ## Informes y artefactos
