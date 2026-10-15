@@ -1,8 +1,29 @@
+# Dependencies
 node_modules/
+
+# Playwright outputs
 test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+playwright/.auth/
 .playwright-mcp/
+
+# Environment variables (keep a committed .env.example if needed)
 .env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude Code personal settings (shared config like .claude/agents is committed)
+.claude/settings.local.json
+
+# Editors / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
 .DS_Store
+Thumbs.db

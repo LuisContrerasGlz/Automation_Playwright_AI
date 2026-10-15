@@ -82,6 +82,19 @@ BASE_URL=https://www.saucedemo.com npm test
 - **Login › login fails with locked out user**: `locked_out_user`; verifica el error *"Sorry, this user has been locked out."* y que sigue en la pantalla de login.
 - **Cart › standard user can add a t-shirt to the cart**: inicia sesión con `standard_user`, añade la *Sauce Labs Bolt T-Shirt* al carrito y verifica que el contador del carrito muestra `1` y que el botón cambia a *Remove*.
 
+## Agentes de Playwright (Claude Code)
+
+El proyecto incluye los agentes de Playwright generados con `npx playwright init-agents --loop=claude`:
+
+| Agente | Función |
+| --- | --- |
+| `playwright-test-planner` | Explora la web y guarda planes de prueba en `specs/` |
+| `playwright-test-generator` | Genera tests a partir de un plan |
+| `playwright-test-healer` | Depura y corrige tests que fallan |
+
+- Definiciones en `.claude/agents/` y servidor MCP `playwright-test` en `.mcp.json` (Claude Code pide aprobarlo al abrir el proyecto).
+- `tests/seed.spec.ts` es el test semilla: los agentes lo ejecutan para preparar la página (abre el login usando los fixtures del proyecto).
+
 ## Informes y artefactos
 
 - Informe HTML: `playwright-report/` (abrir con `npm run report`).
