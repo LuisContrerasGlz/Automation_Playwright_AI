@@ -14,6 +14,14 @@ export const users = {
     username: 'locked_out_user',
     password: defaultPassword,
   },
+  problem: {
+    username: 'problem_user',
+    password: defaultPassword,
+  },
+  error: {
+    username: 'error_user',
+    password: defaultPassword,
+  },
   invalidPassword: {
     username: process.env.STANDARD_USER ?? 'standard_user',
     password: 'wrong_password',

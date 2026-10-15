@@ -56,31 +56,74 @@ BASE_URL=https://www.saucedemo.com npm test
 ## Estructura
 
 ```
-├── playwright.config.ts      # Configuración de Playwright
-├── tsconfig.json             # TypeScript estricto + alias @pages, @fixtures, @data
+├── playwright.config.ts          # Configuración de Playwright
+├── tsconfig.json                 # TypeScript estricto + alias @pages, @components, @fixtures, @data, @utils
+├── specs/                        # Planes de prueba (generados con el agente planner)
 ├── src/
-│   ├── pages/                # Page Objects (localizadores y acciones, sin aserciones)
+│   ├── components/
+│   │   └── HeaderComponent.ts    # Cabecera compartida: carrito, contador y menú lateral
+│   ├── pages/                    # Page Objects (localizadores y acciones, sin aserciones)
+│   │   ├── BasePage.ts           # Base común: header, reload() y waitForLoaded()
 │   │   ├── LoginPage.ts
-│   │   └── InventoryPage.ts
+│   │   ├── InventoryPage.ts
+│   │   ├── ProductDetailPage.ts
+│   │   └── CartPage.ts
 │   ├── fixtures/
-│   │   └── pages.fixture.ts  # Inyecta los Page Objects en los tests
-│   └── data/                 # Datos de prueba
-│       ├── users.ts
-│       ├── products.ts
-│       └── messages.ts       # Mensajes de error esperados
+│   │   └── pages.fixture.ts      # Inyecta los Page Objects y hace login automático (opción `user`)
+│   ├── data/                     # Datos de prueba
+│   │   ├── users.ts
+│   │   ├── products.ts           # Catálogo (nombre y precio)
+│   │   ├── sort-options.ts
+│   │   └── messages.ts           # Mensajes de error esperados
+│   └── utils/
+│       └── sorting.ts            # Orden esperado según la opción de ordenación
 └── tests/
+    ├── seed.spec.ts              # Seed para los agentes de Playwright
     ├── auth/
     │   └── login.spec.ts
     └── cart/
-        └── add-to-cart.spec.ts
+        ├── add-to-cart.spec.ts
+        ├── inventory.spec.ts
+        ├── product-detail.spec.ts
+        ├── cart-page.spec.ts
+        ├── sorting.spec.ts
+        ├── persistence.spec.ts
+        └── special-users.spec.ts
+```
+
+### Empezar un test con la sesión iniciada
+
+```ts
+import { test, expect } from '@fixtures/pages.fixture';
+import { users } from '@data/users';
+
+test.use({ user: users.standard }); // login automático y espera al inventario
+
+test('...', async ({ inventoryPage, cartPage }) => { /* ... */ });
 ```
 
 ## Escenarios
 
-- **Login › standard user can log in with valid credentials**: inicia sesión con `standard_user` y verifica que llega al inventario (*Products*) sin mensaje de error.
-- **Login › login fails with wrong password**: `standard_user` con contraseña errónea; verifica el error *"Username and password do not match any user in this service"* y que sigue en la pantalla de login.
-- **Login › login fails with locked out user**: `locked_out_user`; verifica el error *"Sorry, this user has been locked out."* y que sigue en la pantalla de login.
-- **Cart › standard user can add a t-shirt to the cart**: inicia sesión con `standard_user`, añade la *Sauce Labs Bolt T-Shirt* al carrito y verifica que el contador del carrito muestra `1` y que el botón cambia a *Remove*.
+### Login (`tests/auth`)
+- **standard user can log in with valid credentials**: llega al inventario (*Products*) sin mensaje de error.
+- **login fails with wrong password**: error *"Username and password do not match any user in this service"*.
+- **login fails with locked out user**: error *"Sorry, this user has been locked out."*.
+
+### Carrito (`tests/cart`, plan en `specs/add-to-cart.plan.md`)
+| Fichero | Cobertura |
+| --- | --- |
+| `add-to-cart.spec.ts` | Login + añadir la *Sauce Labs Bolt T-Shirt* |
+| `inventory.spec.ts` | Añadir varios/todos, quitar, contador a 0, volver a añadir |
+| `product-detail.spec.ts` | Añadir/quitar desde el detalle y coherencia con el inventario |
+| `cart-page.spec.ts` | Contenido (nombre, precio, cantidad), carrito vacío, quitar, Continue Shopping, abrir detalle |
+| `sorting.spec.ts` | Añadir tras ordenar y carrito intacto al cambiar el orden |
+| `persistence.spec.ts` | Recarga, logout/login, Reset App State, navegación entre páginas |
+| `special-users.spec.ts` | `problem_user` y `error_user` |
+
+### Bugs conocidos (`test.fail()`)
+Estos tests comprueban el comportamiento **correcto** y están marcados con `test.fail()` y una anotación `issue`, porque la web tiene el bug. Si un día se corrige, Playwright los marcará como fallo para que se quite la marca.
+- *Reset App State* no devuelve los botones a *Add to cart* hasta recargar la página.
+- `problem_user` / `error_user`: solo se añaden 3 de los 6 productos y *Remove* no funciona.
 
 ## Agentes de Playwright (Claude Code)
 
