@@ -4,6 +4,7 @@
 import { test, expect } from '@fixtures/pages.fixture';
 import { users } from '@data/users';
 import { products } from '@data/products';
+import { pageTitles } from '@data/page-titles';
 
 test.use({ user: users.standard });
 
@@ -17,7 +18,7 @@ test.describe('Cart page', () => {
     await inventoryPage.header.openCart();
 
     await expect(page).toHaveURL(/\/cart\.html$/);
-    await expect(cartPage.title).toHaveText('Your Cart');
+    await expect(cartPage.title).toHaveText(pageTitles.cart);
     await expect(cartPage.items).toHaveCount(3);
     expect(await cartPage.getItems()).toEqual(
       selected.map((p) => ({ name: p.name, price: p.price, quantity: '1' })),

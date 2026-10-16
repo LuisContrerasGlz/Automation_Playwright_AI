@@ -4,10 +4,11 @@ export interface User {
 }
 
 const defaultPassword = process.env.STANDARD_PASSWORD ?? 'secret_sauce';
+const standardUsername = process.env.STANDARD_USER ?? 'standard_user';
 
 export const users = {
   standard: {
-    username: process.env.STANDARD_USER ?? 'standard_user',
+    username: standardUsername,
     password: defaultPassword,
   },
   lockedOut: {
@@ -23,7 +24,28 @@ export const users = {
     password: defaultPassword,
   },
   invalidPassword: {
-    username: process.env.STANDARD_USER ?? 'standard_user',
+    username: standardUsername,
     password: 'wrong_password',
+  },
+  unknown: {
+    username: 'unknown_user',
+    password: 'any_password',
+  },
+  /** Usernames are case-sensitive, so this one is rejected. */
+  wrongCase: {
+    username: standardUsername.toUpperCase(),
+    password: defaultPassword,
+  },
+  emptyUsername: {
+    username: '',
+    password: defaultPassword,
+  },
+  emptyPassword: {
+    username: standardUsername,
+    password: '',
+  },
+  empty: {
+    username: '',
+    password: '',
   },
 } satisfies Record<string, User>;

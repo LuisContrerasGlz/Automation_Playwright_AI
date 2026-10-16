@@ -1,6 +1,7 @@
 import { test, expect } from '@fixtures/pages.fixture';
 import { users } from '@data/users';
 import { loginErrors } from '@data/messages';
+import { pageTitles } from '@data/page-titles';
 
 test.describe('Login', () => {
   test.beforeEach(async ({ loginPage }) => {
@@ -11,7 +12,7 @@ test.describe('Login', () => {
     await loginPage.login(users.standard);
 
     await expect(page).toHaveURL(/\/inventory\.html$/);
-    await expect(inventoryPage.title).toHaveText('Products');
+    await expect(inventoryPage.title).toHaveText(pageTitles.inventory);
     await expect(loginPage.errorMessage).toBeHidden();
   });
 

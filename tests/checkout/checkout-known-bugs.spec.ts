@@ -9,6 +9,11 @@ import { routes } from '@data/routes';
 
 test.use({ user: users.standard });
 
+const checkoutStepsOutOfFlow = [
+  { name: 'overview', url: routes.checkoutOverview },
+  { name: 'complete', url: routes.checkoutComplete },
+];
+
 test.describe('Checkout known bugs', () => {
   test(
     'Whitespace-only names and invalid postal code are rejected',
@@ -38,4 +43,23 @@ test.describe('Checkout known bugs', () => {
       await expect(page).not.toHaveURL(routes.checkoutOverview);
     },
   );
+
+  for (const { name, url } of checkoutStepsOutOfFlow) {
+    test(
+      `Checkout ${name} page cannot be opened directly with an empty cart`,
+      {
+        annotation: {
+          type: 'issue',
+          description: 'KB-4: with a session, checkout-step-two and checkout-complete load without going through the flow.',
+        },
+      },
+      async ({ page }) => {
+        test.fail();
+
+        await page.goto(url);
+
+        await expect(page).not.toHaveURL(url);
+      },
+    );
+  }
 });

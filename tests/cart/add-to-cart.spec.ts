@@ -1,6 +1,7 @@
 import { test, expect } from '@fixtures/pages.fixture';
 import { users } from '@data/users';
 import { products } from '@data/products';
+import { pageTitles } from '@data/page-titles';
 
 test.describe('Cart', () => {
   test('standard user can add a t-shirt to the cart', async ({ page, loginPage, inventoryPage }) => {
@@ -10,7 +11,7 @@ test.describe('Cart', () => {
       await loginPage.goto();
       await loginPage.login(users.standard);
       await expect(page).toHaveURL(/\/inventory\.html$/);
-      await expect(inventoryPage.title).toHaveText('Products');
+      await expect(inventoryPage.title).toHaveText(pageTitles.inventory);
     });
 
     await test.step(`Add "${tShirt}" to the cart`, async () => {

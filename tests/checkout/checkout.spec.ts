@@ -5,8 +5,9 @@ import { test, expect } from '@fixtures/pages.fixture';
 import { users } from '@data/users';
 import { products, allProducts } from '@data/products';
 import { customers } from '@data/customers';
-import { checkoutTitles, checkoutInfo, orderConfirmation } from '@data/checkout';
+import { checkoutInfo, orderConfirmation } from '@data/checkout';
 import { routes } from '@data/routes';
+import { pageTitles } from '@data/page-titles';
 import { expectedSummary } from '@utils/pricing';
 
 test.use({ user: users.standard });
@@ -27,7 +28,7 @@ test.describe('Checkout: happy path and totals', () => {
     await cartPage.checkout();
 
     await expect(page).toHaveURL(routes.checkoutInformation);
-    await expect(checkoutInformationPage.title).toHaveText(checkoutTitles.information);
+    await expect(checkoutInformationPage.title).toHaveText(pageTitles.checkoutInformation);
     await expect(checkoutInformationPage.firstNameInput).toBeVisible();
     await expect(checkoutInformationPage.lastNameInput).toBeVisible();
     await expect(checkoutInformationPage.postalCodeInput).toBeVisible();
@@ -38,7 +39,7 @@ test.describe('Checkout: happy path and totals', () => {
     await checkoutInformationPage.submitInformation(customers.valid);
 
     await expect(page).toHaveURL(routes.checkoutOverview);
-    await expect(checkoutOverviewPage.title).toHaveText(checkoutTitles.overview);
+    await expect(checkoutOverviewPage.title).toHaveText(pageTitles.checkoutOverview);
     expect(await checkoutOverviewPage.getItems()).toEqual([
       { ...backpack, quantity: '1' },
       { ...bikeLight, quantity: '1' },
@@ -50,7 +51,7 @@ test.describe('Checkout: happy path and totals', () => {
     await checkoutOverviewPage.finish();
 
     await expect(page).toHaveURL(routes.checkoutComplete);
-    await expect(checkoutCompletePage.title).toHaveText(checkoutTitles.complete);
+    await expect(checkoutCompletePage.title).toHaveText(pageTitles.checkoutComplete);
     await expect(checkoutCompletePage.completeHeader).toHaveText(orderConfirmation.header);
     await expect(checkoutCompletePage.completeText).toHaveText(orderConfirmation.text);
     await expect(checkoutCompletePage.backHomeButton).toBeVisible();

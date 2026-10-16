@@ -81,7 +81,8 @@ BASE_URL=https://www.saucedemo.com npm test
 │   │   ├── products.ts           # Catálogo (nombre y precio)
 │   │   ├── sort-options.ts
 │   │   ├── customers.ts          # Datos del formulario de checkout
-│   │   ├── checkout.ts           # Impuesto, títulos y textos del checkout
+│   │   ├── checkout.ts           # Impuesto y textos del checkout
+│   │   ├── page-titles.ts        # Título de cada página
 │   │   ├── routes.ts             # URLs y páginas protegidas
 │   │   └── messages.ts           # Mensajes de error esperados
 │   └── utils/
@@ -91,11 +92,14 @@ BASE_URL=https://www.saucedemo.com npm test
     ├── seed.spec.ts              # Seed para los agentes de Playwright
     ├── auth/
     │   ├── login.spec.ts
+    │   ├── login-validation.spec.ts
+    │   ├── logout.spec.ts
     │   └── access-control.spec.ts
     ├── checkout/
     │   ├── checkout.spec.ts
     │   ├── checkout-totals.spec.ts
     │   ├── checkout-validation.spec.ts
+    │   ├── checkout-navigation.spec.ts
     │   └── checkout-known-bugs.spec.ts
     └── cart/
         ├── add-to-cart.spec.ts
@@ -124,6 +128,8 @@ test('...', async ({ inventoryPage, cartPage }) => { /* ... */ });
 - **standard user can log in with valid credentials**: llega al inventario (*Products*) sin mensaje de error.
 - **login fails with wrong password**: error *"Username and password do not match any user in this service"*.
 - **login fails with locked out user**: error *"Sorry, this user has been locked out."*.
+- **Login validation** (`login-validation.spec.ts`): campos vacíos, usuario inexistente, usuario en mayúsculas y cerrar el mensaje de error.
+- **Logout** (`logout.spec.ts`): desde el inventario, el carrito y el checkout vuelve al login con los campos vacíos y sin cookies.
 - **Access control** (`access-control.spec.ts`): las 6 páginas internas redirigen al login sin sesión; tras el logout, *Atrás* y la URL del checkout no dan acceso.
 
 ### Checkout (`tests/checkout`, plan en `specs/coverage-gaps.plan.md`)
@@ -132,6 +138,7 @@ test('...', async ({ inventoryPage, cartPage }) => { /* ... */ });
 | `checkout.spec.ts` | Compra completa paso a paso, resumen tras quitar un producto, carrito vacío tras terminar y *Back Home* |
 | `checkout-totals.spec.ts` | Subtotal, impuesto (8%) y total para varios conjuntos de productos |
 | `checkout-validation.spec.ts` | Campos obligatorios, cerrar el error conserva los datos, *Cancel* conserva el carrito |
+| `checkout-navigation.spec.ts` | *Cancel* en el paso 1 vuelve al carrito; en el paso 2 vuelve al inventario sin vaciar el carrito |
 | `checkout-known-bugs.spec.ts` | Bugs conocidos del formulario y del carrito vacío |
 
 ### Carrito (`tests/cart`, plan en `specs/add-to-cart.plan.md`)
@@ -152,6 +159,7 @@ Estos tests comprueban el comportamiento **correcto** y están marcados con `tes
 - El subtotal del checkout no se redondea: *"Item total: $57.980000000000004"* (Onesie + Fleece Jacket).
 - El formulario de checkout acepta nombres de solo espacios y un código postal `abc!@#`.
 - Se puede completar una compra con el carrito vacío.
+- Con sesión iniciada, el resumen y la confirmación del pedido se abren por URL directa sin pasar por el checkout.
 
 ## Agentes de Playwright (Claude Code)
 

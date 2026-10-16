@@ -1,11 +1,5 @@
 export const TAX_RATE = 0.08;
 
-export const checkoutTitles = {
-  information: 'Checkout: Your Information',
-  overview: 'Checkout: Overview',
-  complete: 'Checkout: Complete!',
-} as const;
-
 export const checkoutInfo = {
   payment: 'SauceCard #31337',
   shipping: 'Free Pony Express Delivery!',
