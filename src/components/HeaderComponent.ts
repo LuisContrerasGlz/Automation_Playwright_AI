@@ -7,10 +7,13 @@ export class HeaderComponent {
   readonly menuButton: Locator;
   readonly closeMenuButton: Locator;
   readonly allItemsLink: Locator;
+  readonly aboutLink: Locator;
   readonly logoutLink: Locator;
   readonly resetAppStateLink: Locator;
-  private readonly openedMenu: Locator;
-  private readonly closedMenu: Locator;
+  /** Present only while the side menu is open. */
+  readonly openedMenu: Locator;
+  /** Present only while the side menu is closed. */
+  readonly closedMenu: Locator;
 
   constructor(page: Page) {
     this.cartLink = page.getByTestId('shopping-cart-link');
@@ -19,6 +22,7 @@ export class HeaderComponent {
     this.menuButton = page.getByRole('button', { name: 'Open Menu' });
     this.closeMenuButton = page.getByRole('button', { name: 'Close Menu' });
     this.allItemsLink = page.getByTestId('inventory-sidebar-link');
+    this.aboutLink = page.getByTestId('about-sidebar-link');
     this.logoutLink = page.getByTestId('logout-sidebar-link');
     this.resetAppStateLink = page.getByTestId('reset-sidebar-link');
     // The side menu stays rendered (and "visible") off-screen; aria-hidden is the reliable open/closed signal.

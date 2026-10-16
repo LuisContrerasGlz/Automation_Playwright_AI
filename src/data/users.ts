@@ -23,6 +23,15 @@ export const users = {
     username: 'error_user',
     password: defaultPassword,
   },
+  visual: {
+    username: 'visual_user',
+    password: defaultPassword,
+  },
+  /** Login takes ~5s (longer than the default expect timeout). */
+  performanceGlitch: {
+    username: 'performance_glitch_user',
+    password: defaultPassword,
+  },
   invalidPassword: {
     username: standardUsername,
     password: 'wrong_password',

@@ -1,12 +1,15 @@
 import { type Page } from '@playwright/test';
 import { HeaderComponent } from '@components/HeaderComponent';
+import { FooterComponent } from '@components/FooterComponent';
 
-/** Base for pages shown after login; all of them share the header. */
+/** Base for pages shown after login; all of them share the header and footer. */
 export abstract class BasePage {
   readonly header: HeaderComponent;
+  readonly footer: FooterComponent;
 
   constructor(protected readonly page: Page) {
     this.header = new HeaderComponent(page);
+    this.footer = new FooterComponent(page);
   }
 
   async reload(): Promise<void> {

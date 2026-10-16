@@ -217,7 +217,7 @@ BUGS CONOCIDOS OBSERVADOS (marcar test.fail()/annotation 'known bug'): (KB-1) It
 
 **Steps:**
   1. Login visual_user, leer precios del inventario.
-    - expect: Observado: `$57.9, $36.71, $44.27, $28.26, $7.84, $12.68` en lugar de $29.99/$9.99/$15.99/$49.99/$7.99/$15.99 (el orden de ese array es el del DOM); botones Add to cart con posiciones distintas (el ultimo en x=1029 vs 975/420) y carrito en x=1034. Marcar KB-5
+    - expect: Verificado: los precios del inventario son ALEATORIOS en cada carga (p. ej. Backpack $52.81 y luego $19.94) y no coinciden con el catalogo real ($29.99/$9.99/$15.99/$49.99/$7.99/$15.99). El carrito muestra el precio real ($29.99). No asertar valores concretos de visual_user: asertar que deberian coincidir con el catalogo (test.fail). Marcar KB-5
   2. Agregar Backpack y Bike Light, completar checkout.
     - expect: Overview `Item total: $39.98`, `Tax: $3.20`, `Total: $43.18` (usa precios reales, inconsistente con inventario); llega a `Checkout: Complete!`
 
@@ -245,7 +245,7 @@ BUGS CONOCIDOS OBSERVADOS (marcar test.fail()/annotation 'known bug'): (KB-1) It
 
 **Steps:**
   1. Login performance_glitch_user con timeout amplio (>=15s) y completar flujo de compra.
-    - expect: Observado en una ejecucion: login a inventory y checkout completo con `Item total: $39.98 / Tax: $3.20 / Total: $43.18` y `Checkout: Complete!`. En otra ejecucion el primer click fallo por timeout de 5s: la lentitud es intermitente, no se pudo cuantificar. Aserciones de tiempo NO deben usarse como criterio fiable
+    - expect: Verificado (3 ejecuciones): el login tarda ~5.1s de forma constante (supera el timeout por defecto de expect de 5s); despues las acciones son normales (~30ms). Usar test.slow() y esperar a la carga del inventario, sin aserciones de tiempo. Completa el checkout con `Item total: $39.98 / Tax: $3.20 / Total: $43.18` y `Checkout: Complete!`
 
 #### 5.5. [P3] Footer and menu external links point to expected URLs
 
@@ -253,12 +253,12 @@ BUGS CONOCIDOS OBSERVADOS (marcar test.fail()/annotation 'known bug'): (KB-1) It
 
 **Steps:**
   1. Verificar atributo href sin navegar: About -> https://saucelabs.com/, `social-x` -> https://x.com/saucelabs, `social-facebook` -> https://www.facebook.com/saucelabs, `social-linkedin` -> https://www.linkedin.com/company/sauce-labs/.
-    - expect: Los href coinciden exactamente
+    - expect: Verificado: los href coinciden exactamente; los enlaces sociales son <a> con target=_blank
 
 #### 5.6. [P3] Menu All Items link and Close Menu
 
 **File:** `tests/navigation/menu.spec.ts`
 
 **Steps:**
-  1. Desde /cart.html abrir menu y click en `inventory-sidebar-link` (`All Items`); abrir menu y click `close-menu`. INFERIDO: el comportamiento exacto no fue ejecutado.
-    - expect: All Items lleva a /inventory.html; Close Menu cierra el panel. Existe tambien un item `Dynamic Catalog` (`dynamic-catalog-sidebar-link`) no explorado
+  1. Desde /cart.html abrir menu y click en `inventory-sidebar-link` (`All Items`); abrir menu y click `close-menu`. 
+    - expect: Verificado: All Items lleva a /inventory.html y el menu queda cerrado; Close Menu cierra el panel (aria-hidden=true). Items del menu: All Items, Dynamic Catalog, About, Logout, Reset App State. `Dynamic Catalog` tiene href `#` (no explorado, fuera de alcance)

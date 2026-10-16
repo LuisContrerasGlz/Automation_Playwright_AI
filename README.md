@@ -62,6 +62,7 @@ BASE_URL=https://www.saucedemo.com npm test
 ├── src/
 │   ├── components/
 │   │   ├── HeaderComponent.ts    # Cabecera compartida: carrito, contador y menú lateral
+│   │   ├── FooterComponent.ts    # Pie compartido: enlaces sociales y copyright
 │   │   └── CartItemsComponent.ts # Lista de productos compartida por carrito y resumen del checkout
 │   ├── pages/                    # Page Objects (localizadores y acciones, sin aserciones)
 │   │   ├── BasePage.ts           # Base común: header, reload() y waitForLoaded()
@@ -83,6 +84,7 @@ BASE_URL=https://www.saucedemo.com npm test
 │   │   ├── customers.ts          # Datos del formulario de checkout
 │   │   ├── checkout.ts           # Impuesto y textos del checkout
 │   │   ├── page-titles.ts        # Título de cada página
+│   │   ├── links.ts              # URLs externas (About y redes sociales)
 │   │   ├── routes.ts             # URLs y páginas protegidas
 │   │   └── messages.ts           # Mensajes de error esperados
 │   └── utils/
@@ -100,7 +102,11 @@ BASE_URL=https://www.saucedemo.com npm test
     │   ├── checkout-totals.spec.ts
     │   ├── checkout-validation.spec.ts
     │   ├── checkout-navigation.spec.ts
-    │   └── checkout-known-bugs.spec.ts
+    │   ├── checkout-known-bugs.spec.ts
+    │   └── special-users-checkout.spec.ts
+    ├── navigation/
+    │   ├── links.spec.ts
+    │   └── menu.spec.ts
     └── cart/
         ├── add-to-cart.spec.ts
         ├── inventory.spec.ts
@@ -139,7 +145,12 @@ test('...', async ({ inventoryPage, cartPage }) => { /* ... */ });
 | `checkout-totals.spec.ts` | Subtotal, impuesto (8%) y total para varios conjuntos de productos |
 | `checkout-validation.spec.ts` | Campos obligatorios, cerrar el error conserva los datos, *Cancel* conserva el carrito |
 | `checkout-navigation.spec.ts` | *Cancel* en el paso 1 vuelve al carrito; en el paso 2 vuelve al inventario sin vaciar el carrito |
-| `checkout-known-bugs.spec.ts` | Bugs conocidos del formulario y del carrito vacío |
+| `checkout-known-bugs.spec.ts` | Bugs conocidos del formulario, del carrito vacío y del acceso directo por URL |
+| `special-users-checkout.spec.ts` | `visual_user`, `problem_user`, `error_user` y `performance_glitch_user` en el checkout |
+
+### Navegación (`tests/navigation`)
+- **links.spec.ts**: los enlaces del pie (X, Facebook, LinkedIn) y *About* apuntan a la URL correcta; se comprueba el `href` sin navegar a webs externas.
+- **menu.spec.ts**: *All Items* desde el carrito vuelve al inventario; el menú se abre y se cierra.
 
 ### Carrito (`tests/cart`, plan en `specs/add-to-cart.plan.md`)
 | Fichero | Cobertura |
@@ -160,6 +171,9 @@ Estos tests comprueban el comportamiento **correcto** y están marcados con `tes
 - El formulario de checkout acepta nombres de solo espacios y un código postal `abc!@#`.
 - Se puede completar una compra con el carrito vacío.
 - Con sesión iniciada, el resumen y la confirmación del pedido se abren por URL directa sin pasar por el checkout.
+- `visual_user` ve precios aleatorios en el inventario (el carrito y el checkout usan los reales).
+- `problem_user`: en el checkout, el apellido se escribe en el campo del nombre.
+- `error_user`: *Finish* no completa el pedido (error JavaScript).
 
 ## Agentes de Playwright (Claude Code)
 
