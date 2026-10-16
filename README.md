@@ -57,30 +57,46 @@ BASE_URL=https://www.saucedemo.com npm test
 
 ```
 ├── playwright.config.ts          # Configuración de Playwright
-├── tsconfig.json                 # TypeScript estricto + alias @pages, @components, @fixtures, @data, @utils
+├── tsconfig.json                 # TypeScript estricto + alias @pages, @components, @flows, @fixtures, @data, @utils
 ├── specs/                        # Planes de prueba (generados con el agente planner)
 ├── src/
 │   ├── components/
-│   │   └── HeaderComponent.ts    # Cabecera compartida: carrito, contador y menú lateral
+│   │   ├── HeaderComponent.ts    # Cabecera compartida: carrito, contador y menú lateral
+│   │   └── CartItemsComponent.ts # Lista de productos compartida por carrito y resumen del checkout
 │   ├── pages/                    # Page Objects (localizadores y acciones, sin aserciones)
 │   │   ├── BasePage.ts           # Base común: header, reload() y waitForLoaded()
 │   │   ├── LoginPage.ts
 │   │   ├── InventoryPage.ts
 │   │   ├── ProductDetailPage.ts
-│   │   └── CartPage.ts
+│   │   ├── CartPage.ts
+│   │   ├── CheckoutInformationPage.ts
+│   │   ├── CheckoutOverviewPage.ts
+│   │   └── CheckoutCompletePage.ts
+│   ├── flows/
+│   │   └── CheckoutFlow.ts       # Flujos de negocio multi-página (llegar al checkout, al resumen, completar pedido)
 │   ├── fixtures/
 │   │   └── pages.fixture.ts      # Inyecta los Page Objects y hace login automático (opción `user`)
 │   ├── data/                     # Datos de prueba
 │   │   ├── users.ts
 │   │   ├── products.ts           # Catálogo (nombre y precio)
 │   │   ├── sort-options.ts
+│   │   ├── customers.ts          # Datos del formulario de checkout
+│   │   ├── checkout.ts           # Impuesto, títulos y textos del checkout
+│   │   ├── routes.ts             # URLs y páginas protegidas
 │   │   └── messages.ts           # Mensajes de error esperados
 │   └── utils/
-│       └── sorting.ts            # Orden esperado según la opción de ordenación
+│       ├── sorting.ts            # Orden esperado según la opción de ordenación
+│       └── pricing.ts            # Totales esperados del checkout (subtotal, impuesto, total)
 └── tests/
     ├── seed.spec.ts              # Seed para los agentes de Playwright
     ├── auth/
-    │   └── login.spec.ts
+    │   ├── login.spec.ts
+    │   └── access-control.spec.ts
+    ├── checkout/
+    │   ├── checkout.spec.ts
+    │   ├── checkout-totals.spec.ts
+    │   ├── checkout-validation.spec.ts
+    │   └── checkout-known-bugs.spec.ts
     └── cart/
         ├── add-to-cart.spec.ts
         ├── inventory.spec.ts
@@ -108,6 +124,15 @@ test('...', async ({ inventoryPage, cartPage }) => { /* ... */ });
 - **standard user can log in with valid credentials**: llega al inventario (*Products*) sin mensaje de error.
 - **login fails with wrong password**: error *"Username and password do not match any user in this service"*.
 - **login fails with locked out user**: error *"Sorry, this user has been locked out."*.
+- **Access control** (`access-control.spec.ts`): las 6 páginas internas redirigen al login sin sesión; tras el logout, *Atrás* y la URL del checkout no dan acceso.
+
+### Checkout (`tests/checkout`, plan en `specs/coverage-gaps.plan.md`)
+| Fichero | Cobertura |
+| --- | --- |
+| `checkout.spec.ts` | Compra completa paso a paso, resumen tras quitar un producto, carrito vacío tras terminar y *Back Home* |
+| `checkout-totals.spec.ts` | Subtotal, impuesto (8%) y total para varios conjuntos de productos |
+| `checkout-validation.spec.ts` | Campos obligatorios, cerrar el error conserva los datos, *Cancel* conserva el carrito |
+| `checkout-known-bugs.spec.ts` | Bugs conocidos del formulario y del carrito vacío |
 
 ### Carrito (`tests/cart`, plan en `specs/add-to-cart.plan.md`)
 | Fichero | Cobertura |
@@ -124,6 +149,9 @@ test('...', async ({ inventoryPage, cartPage }) => { /* ... */ });
 Estos tests comprueban el comportamiento **correcto** y están marcados con `test.fail()` y una anotación `issue`, porque la web tiene el bug. Si un día se corrige, Playwright los marcará como fallo para que se quite la marca.
 - *Reset App State* no devuelve los botones a *Add to cart* hasta recargar la página.
 - `problem_user` / `error_user`: solo se añaden 3 de los 6 productos y *Remove* no funciona.
+- El subtotal del checkout no se redondea: *"Item total: $57.980000000000004"* (Onesie + Fleece Jacket).
+- El formulario de checkout acepta nombres de solo espacios y un código postal `abc!@#`.
+- Se puede completar una compra con el carrito vacío.
 
 ## Agentes de Playwright (Claude Code)
 

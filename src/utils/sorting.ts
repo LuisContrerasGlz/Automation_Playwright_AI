@@ -1,7 +1,6 @@
 import { type Product } from '@data/products';
 import { sortOptions, type SortOption } from '@data/sort-options';
-
-export const parsePrice = (price: string): number => Number(price.replace('$', ''));
+import { parsePrice } from './pricing';
 
 /** Returns the product names in the order the store should display them for a given sort option. */
 export function expectedOrder(items: Product[], option: SortOption): string[] {

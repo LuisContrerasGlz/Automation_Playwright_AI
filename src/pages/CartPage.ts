@@ -1,14 +1,12 @@
 import { type Locator, type Page } from '@playwright/test';
+import { CartItemsComponent, type CartItem } from '@components/CartItemsComponent';
 import { BasePage } from './BasePage';
 
-export interface CartItem {
-  name: string;
-  price: string;
-  quantity: string;
-}
+export type { CartItem };
 
 export class CartPage extends BasePage {
   readonly title: Locator;
+  readonly cartItems: CartItemsComponent;
   readonly cartList: Locator;
   readonly items: Locator;
   readonly continueShoppingButton: Locator;
@@ -17,8 +15,9 @@ export class CartPage extends BasePage {
   constructor(page: Page) {
     super(page);
     this.title = page.getByTestId('title');
-    this.cartList = page.getByTestId('cart-list');
-    this.items = this.cartList.getByTestId('inventory-item');
+    this.cartItems = new CartItemsComponent(page);
+    this.cartList = this.cartItems.list;
+    this.items = this.cartItems.items;
     this.continueShoppingButton = page.getByTestId('continue-shopping');
     this.checkoutButton = page.getByTestId('checkout');
   }
@@ -33,9 +32,7 @@ export class CartPage extends BasePage {
   }
 
   item(productName: string): Locator {
-    return this.items.filter({
-      has: this.page.getByTestId('inventory-item-name').getByText(productName, { exact: true }),
-    });
+    return this.cartItems.item(productName);
   }
 
   removeButton(productName: string): Locator {
@@ -54,14 +51,11 @@ export class CartPage extends BasePage {
     await this.continueShoppingButton.click();
   }
 
+  async checkout(): Promise<void> {
+    await this.checkoutButton.click();
+  }
+
   async getItems(): Promise<CartItem[]> {
-    await this.waitForLoaded();
-    return this.items.evaluateAll((rows) =>
-      rows.map((row) => ({
-        name: row.querySelector('[data-test="inventory-item-name"]')?.textContent ?? '',
-        price: row.querySelector('[data-test="inventory-item-price"]')?.textContent ?? '',
-        quantity: row.querySelector('[data-test="item-quantity"]')?.textContent ?? '',
-      })),
-    );
+    return this.cartItems.getItems();
   }
 }

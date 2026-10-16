@@ -4,12 +4,23 @@ import { LoginPage } from '@pages/LoginPage';
 import { InventoryPage } from '@pages/InventoryPage';
 import { ProductDetailPage } from '@pages/ProductDetailPage';
 import { CartPage } from '@pages/CartPage';
+import { CheckoutInformationPage } from '@pages/CheckoutInformationPage';
+import { CheckoutOverviewPage } from '@pages/CheckoutOverviewPage';
+import { CheckoutCompletePage } from '@pages/CheckoutCompletePage';
+import { CheckoutFlow } from '@flows/CheckoutFlow';
 
 type Pages = {
   loginPage: LoginPage;
   inventoryPage: InventoryPage;
   productDetailPage: ProductDetailPage;
   cartPage: CartPage;
+  checkoutInformationPage: CheckoutInformationPage;
+  checkoutOverviewPage: CheckoutOverviewPage;
+  checkoutCompletePage: CheckoutCompletePage;
+};
+
+type Flows = {
+  checkoutFlow: CheckoutFlow;
 };
 
 type Options = {
@@ -21,7 +32,7 @@ type AutoFixtures = {
   authenticate: void;
 };
 
-export const test = base.extend<Pages & Options & AutoFixtures>({
+export const test = base.extend<Pages & Flows & Options & AutoFixtures>({
   user: [undefined, { option: true }],
 
   loginPage: async ({ page }, use) => {
@@ -35,6 +46,24 @@ export const test = base.extend<Pages & Options & AutoFixtures>({
   },
   cartPage: async ({ page }, use) => {
     await use(new CartPage(page));
+  },
+  checkoutInformationPage: async ({ page }, use) => {
+    await use(new CheckoutInformationPage(page));
+  },
+  checkoutOverviewPage: async ({ page }, use) => {
+    await use(new CheckoutOverviewPage(page));
+  },
+  checkoutCompletePage: async ({ page }, use) => {
+    await use(new CheckoutCompletePage(page));
+  },
+
+  checkoutFlow: async (
+    { inventoryPage, cartPage, checkoutInformationPage, checkoutOverviewPage, checkoutCompletePage },
+    use,
+  ) => {
+    await use(
+      new CheckoutFlow(inventoryPage, cartPage, checkoutInformationPage, checkoutOverviewPage, checkoutCompletePage),
+    );
   },
 
   authenticate: [
