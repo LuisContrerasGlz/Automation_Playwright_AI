@@ -1,10 +1,12 @@
 # SauceDemo · Playwright + TypeScript
 
+[![Playwright Tests](https://github.com/LuisContrerasGlz/Automation_Playwright_AI/actions/workflows/playwright.yml/badge.svg)](https://github.com/LuisContrerasGlz/Automation_Playwright_AI/actions/workflows/playwright.yml)
+
 Tests E2E para [saucedemo.com](https://www.saucedemo.com/) con [Playwright](https://playwright.dev/) y TypeScript, siguiendo el patrón **Page Object Model (POM)**.
 
 ## Requisitos
 
-- Node.js 18 o superior (probado con Node 22)
+- Node.js 22 (versión fijada en `.nvmrc`; con nvm: `nvm use`)
 - npm
 
 ## Instalación
@@ -174,6 +176,22 @@ Estos tests comprueban el comportamiento **correcto** y están marcados con `tes
 - `visual_user` ve precios aleatorios en el inventario (el carrito y el checkout usan los reales).
 - `problem_user`: en el checkout, el apellido se escribe en el campo del nombre.
 - `error_user`: *Finish* no completa el pedido (error JavaScript).
+
+## Integración continua (GitHub Actions)
+
+El workflow `.github/workflows/playwright.yml` ejecuta la suite:
+
+| Cuándo | Para qué |
+| --- | --- |
+| Cada push a `main` y cada pull request | Detectar regresiones antes de integrar |
+| De lunes a viernes a las 06:00 UTC | La web es de terceros: detecta cambios en ella (y bugs conocidos que se corrijan) |
+| Manualmente (*Run workflow*) | Ejecutarla bajo demanda |
+
+Pasos: instala dependencias (`npm ci`), comprueba tipos, instala Chromium, ejecuta los tests y sube el informe HTML como artefacto (`playwright-report`, 14 días). Si algo falla, sube también trazas, capturas y vídeos (`test-results`, 7 días).
+
+Buenas prácticas aplicadas: permisos mínimos (`contents: read`), acciones fijadas a un commit (SHA), caché de npm, versión de Node compartida con local (`.nvmrc`), `timeout-minutes`, cancelación de ejecuciones obsoletas y anotaciones de fallos en el PR (reporter `github`).
+
+**Ver el informe de una ejecución:** pestaña *Actions* → ejecución → *Artifacts* → descargar `playwright-report` → descomprimir y ejecutar `npx playwright show-report <carpeta>`.
 
 ## Agentes de Playwright (Claude Code)
 

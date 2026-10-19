@@ -6,7 +6,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [['html', { open: 'never' }], ['list']],
+  // In CI, the `github` reporter adds failure annotations to the PR / run summary.
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }], ['list']]
+    : [['html', { open: 'never' }], ['list']],
   use: {
     baseURL: process.env.BASE_URL ?? 'https://www.saucedemo.com',
     testIdAttribute: 'data-test',
