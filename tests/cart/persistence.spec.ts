@@ -9,7 +9,7 @@ import { sortOptions } from '@data/sort-options';
 test.use({ user: users.standard });
 
 test.describe('Cart persistence', () => {
-  test('Cart persists after page reload', async ({ inventoryPage }) => {
+  test('Cart persists after page reload', { tag: '@smoke' }, async ({ inventoryPage }) => {
     const { backpack } = products;
 
     // 1. Add a product, change the sort order and reload
@@ -55,21 +55,27 @@ test.describe('Cart persistence', () => {
     await expect(inventoryPage.removeButtons).toHaveCount(0);
   });
 
-  test('Reset App State restores buttons without reload', async ({ inventoryPage }) => {
-    test.fail();
-    test.info().annotations.push({
-      type: 'issue',
-      description: 'After Reset App State the buttons keep showing "Remove" until the page is reloaded.',
-    });
-    const { backpack, bikeLight } = products;
+  test(
+    'Reset App State restores buttons without reload',
+    {
+      tag: '@known-bug',
+      annotation: {
+        type: 'issue',
+        description: 'After Reset App State the buttons keep showing "Remove" until the page is reloaded.',
+      },
+    },
+    async ({ inventoryPage }) => {
+      test.fail();
+      const { backpack, bikeLight } = products;
 
-    await inventoryPage.addProductsToCart([backpack.name, bikeLight.name]);
-    await inventoryPage.header.resetAppState();
+      await inventoryPage.addProductsToCart([backpack.name, bikeLight.name]);
+      await inventoryPage.header.resetAppState();
 
-    await expect(inventoryPage.removeButtons).toHaveCount(0);
-    await expect(inventoryPage.addToCartButton(backpack.name)).toBeVisible();
-    await expect(inventoryPage.addToCartButton(bikeLight.name)).toBeVisible();
-  });
+      await expect(inventoryPage.removeButtons).toHaveCount(0);
+      await expect(inventoryPage.addToCartButton(backpack.name)).toBeVisible();
+      await expect(inventoryPage.addToCartButton(bikeLight.name)).toBeVisible();
+    },
+  );
 
   test('Cart survives navigation inventory > detail > cart > inventory', async ({
     inventoryPage,

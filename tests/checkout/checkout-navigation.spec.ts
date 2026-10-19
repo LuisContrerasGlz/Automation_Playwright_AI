@@ -28,7 +28,7 @@ test.describe('Checkout navigation', () => {
     expect((await cartPage.getItems()).map((item) => item.name)).toEqual(twoProducts.map((p) => p.name));
   });
 
-  test('Cancel on step two returns to the inventory and keeps the cart', async ({
+  test('Cancel on step two returns to the inventory and keeps the cart', { tag: '@smoke' }, async ({
     page,
     checkoutFlow,
     checkoutOverviewPage,

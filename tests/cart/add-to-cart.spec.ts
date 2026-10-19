@@ -4,7 +4,7 @@ import { products } from '@data/products';
 import { pageTitles } from '@data/page-titles';
 
 test.describe('Cart', () => {
-  test('standard user can add a t-shirt to the cart', async ({ page, loginPage, inventoryPage }) => {
+  test('standard user can add a t-shirt to the cart', { tag: '@smoke' }, async ({ page, loginPage, inventoryPage }) => {
     const tShirt = products.boltTShirt.name;
 
     await test.step('Log in as standard user', async () => {

@@ -8,7 +8,7 @@ test.describe('Login', () => {
     await loginPage.goto();
   });
 
-  test('standard user can log in with valid credentials', async ({ page, loginPage, inventoryPage }) => {
+  test('standard user can log in with valid credentials', { tag: '@smoke' }, async ({ page, loginPage, inventoryPage }) => {
     await loginPage.login(users.standard);
 
     await expect(page).toHaveURL(/\/inventory\.html$/);

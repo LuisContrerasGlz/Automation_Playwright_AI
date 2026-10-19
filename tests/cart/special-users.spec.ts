@@ -17,36 +17,39 @@ test.describe('Special users (known buggy users)', () => {
     test.describe(label, () => {
       test.use({ user });
 
-      test(`${label}: add all products`, async ({ inventoryPage }) => {
-        test.fail();
-        test.info().annotations.push({
-          type: 'issue',
-          description: `${label}: only 3 of the 6 products are added to the cart.`,
-        });
+      test(
+        `${label}: add all products`,
+        { tag: '@known-bug', annotation: { type: 'issue', description: `${label}: only 3 of the 6 products are added to the cart.` } },
+        async ({ inventoryPage }) => {
+          test.fail();
 
-        await inventoryPage.addProductsToCart(names);
+          await inventoryPage.addProductsToCart(names);
 
-        await expect(inventoryPage.header.cartBadge).toHaveText('6');
-        await expect(inventoryPage.removeButtons).toHaveCount(6);
-      });
+          await expect(inventoryPage.header.cartBadge).toHaveText('6');
+          await expect(inventoryPage.removeButtons).toHaveCount(6);
+        },
+      );
 
-      test(`${label}: remove products`, async ({ inventoryPage }) => {
-        test.fail();
-        test.info().annotations.push({
-          type: 'issue',
-          description: `${label}: clicking Remove does not remove the products from the cart.`,
-        });
+      test(
+        `${label}: remove products`,
+        {
+          tag: '@known-bug',
+          annotation: { type: 'issue', description: `${label}: clicking Remove does not remove the products from the cart.` },
+        },
+        async ({ inventoryPage }) => {
+          test.fail();
 
-        // Backpack is one of the products these users can add, so only the Remove bug is measured.
-        const { backpack } = products;
-        await inventoryPage.addToCart(backpack.name);
-        await expect(inventoryPage.header.cartBadge).toHaveText('1');
+          // Backpack is one of the products these users can add, so only the Remove bug is measured.
+          const { backpack } = products;
+          await inventoryPage.addToCart(backpack.name);
+          await expect(inventoryPage.header.cartBadge).toHaveText('1');
 
-        await inventoryPage.removeFromCart(backpack.name);
+          await inventoryPage.removeFromCart(backpack.name);
 
-        await expect(inventoryPage.header.cartBadge).toBeHidden();
-        await expect(inventoryPage.addToCartButton(backpack.name)).toBeVisible();
-      });
+          await expect(inventoryPage.header.cartBadge).toBeHidden();
+          await expect(inventoryPage.addToCartButton(backpack.name)).toBeVisible();
+        },
+      );
     });
   }
 });

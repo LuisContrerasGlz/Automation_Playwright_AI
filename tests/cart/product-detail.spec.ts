@@ -8,7 +8,7 @@ import { products } from '@data/products';
 test.use({ user: users.standard });
 
 test.describe('Product detail page', () => {
-  test('Open product detail by name and add to cart', async ({ page, inventoryPage, productDetailPage }) => {
+  test('Open product detail by name and add to cart', { tag: '@smoke' }, async ({ page, inventoryPage, productDetailPage }) => {
     const { backpack } = products;
 
     // 1. Click the product name

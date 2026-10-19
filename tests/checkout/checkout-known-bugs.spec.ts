@@ -17,7 +17,7 @@ const checkoutStepsOutOfFlow = [
 test.describe('Checkout known bugs', () => {
   test(
     'Whitespace-only names and invalid postal code are rejected',
-    { annotation: { type: 'issue', description: 'KB-3: step one accepts " " as names and "abc!@#" as postal code.' } },
+    { tag: '@known-bug', annotation: { type: 'issue', description: 'KB-3: step one accepts " " as names and "abc!@#" as postal code.' } },
     async ({ page, checkoutFlow, checkoutInformationPage }) => {
       test.fail();
 
@@ -31,7 +31,7 @@ test.describe('Checkout known bugs', () => {
 
   test(
     'Checkout is blocked when the cart is empty',
-    { annotation: { type: 'issue', description: 'KB-2: an empty cart can go through the whole checkout (Item total $0).' } },
+    { tag: '@known-bug', annotation: { type: 'issue', description: 'KB-2: an empty cart can go through the whole checkout (Item total $0).' } },
     async ({ page, checkoutFlow, checkoutInformationPage }) => {
       test.fail();
 
@@ -48,6 +48,7 @@ test.describe('Checkout known bugs', () => {
     test(
       `Checkout ${name} page cannot be opened directly with an empty cart`,
       {
+        tag: '@known-bug',
         annotation: {
           type: 'issue',
           description: 'KB-4: with a session, checkout-step-two and checkout-complete load without going through the flow.',

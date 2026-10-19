@@ -34,7 +34,7 @@ test.describe('Checkout overview totals', () => {
 
   test(
     'Item total is rounded for Onesie + Fleece Jacket',
-    { annotation: { type: 'issue', description: 'KB-1: Overview shows "Item total: $57.980000000000004" instead of "$57.98".' } },
+    { tag: '@known-bug', annotation: { type: 'issue', description: 'KB-1: Overview shows "Item total: $57.980000000000004" instead of "$57.98".' } },
     async ({ page, checkoutFlow, checkoutOverviewPage }) => {
       test.fail();
       const items = [products.onesie, products.fleeceJacket];

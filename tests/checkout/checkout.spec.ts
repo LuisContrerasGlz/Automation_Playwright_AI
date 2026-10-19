@@ -13,7 +13,7 @@ import { expectedSummary } from '@utils/pricing';
 test.use({ user: users.standard });
 
 test.describe('Checkout: happy path and totals', () => {
-  test('Checkout happy path with two items completes the order', async ({
+  test('Checkout happy path with two items completes the order', { tag: '@smoke' }, async ({
     page,
     checkoutFlow,
     cartPage,

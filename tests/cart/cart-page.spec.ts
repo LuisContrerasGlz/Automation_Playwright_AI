@@ -9,7 +9,7 @@ import { pageTitles } from '@data/page-titles';
 test.use({ user: users.standard });
 
 test.describe('Cart page', () => {
-  test('Cart lists items with matching name, price and quantity', async ({ page, inventoryPage, cartPage }) => {
+  test('Cart lists items with matching name, price and quantity', { tag: '@smoke' }, async ({ page, inventoryPage, cartPage }) => {
     const { bikeLight, onesie, boltTShirt } = products;
     const selected = [bikeLight, onesie, boltTShirt];
 

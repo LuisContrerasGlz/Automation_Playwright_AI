@@ -28,7 +28,7 @@ test.describe('Special users in checkout', () => {
 
     test(
       'Inventory prices match the catalog',
-      { annotation: { type: 'issue', description: 'KB-5: visual_user sees random inventory prices that differ from the real ones.' } },
+      { tag: '@known-bug', annotation: { type: 'issue', description: 'KB-5: visual_user sees random inventory prices that differ from the real ones.' } },
       async ({ inventoryPage }) => {
         test.fail();
 
@@ -43,7 +43,7 @@ test.describe('Special users in checkout', () => {
 
     test(
       'Checkout form keeps what is typed in each field',
-      { annotation: { type: 'issue', description: 'KB-6: the last name is typed into First Name and Last Name stays empty.' } },
+      { tag: '@known-bug', annotation: { type: 'issue', description: 'KB-6: the last name is typed into First Name and Last Name stays empty.' } },
       async ({ checkoutFlow, checkoutInformationPage }) => {
         test.fail();
 
@@ -63,7 +63,7 @@ test.describe('Special users in checkout', () => {
 
     test(
       'Finish completes the order',
-      { annotation: { type: 'issue', description: 'KB-7: Finish does nothing for error_user (JS error), the order is never completed.' } },
+      { tag: '@known-bug', annotation: { type: 'issue', description: 'KB-7: Finish does nothing for error_user (JS error), the order is never completed.' } },
       async ({ page, checkoutFlow, checkoutOverviewPage, checkoutCompletePage }) => {
         test.fail();
 

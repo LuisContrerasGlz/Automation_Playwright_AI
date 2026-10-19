@@ -20,7 +20,7 @@ test.describe('Access control', () => {
   test.describe('with a session', () => {
     test.use({ user: users.standard });
 
-    test('After logout, browser Back does not expose the inventory', async ({
+    test('After logout, browser Back does not expose the inventory', { tag: '@smoke' }, async ({
       page,
       inventoryPage,
       loginPage,

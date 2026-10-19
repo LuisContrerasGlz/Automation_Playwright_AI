@@ -34,7 +34,7 @@ test.describe('Inventory: add and remove products', () => {
     await expect(inventoryPage.addToCartButtons).toHaveCount(0);
   });
 
-  test('Remove product from inventory updates badge and button', async ({ inventoryPage }) => {
+  test('Remove product from inventory updates badge and button', { tag: '@smoke' }, async ({ inventoryPage }) => {
     const { backpack, bikeLight } = products;
 
     // 1. Add Backpack and Bike Light, then remove the Backpack

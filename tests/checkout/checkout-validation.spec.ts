@@ -68,7 +68,7 @@ test.describe('Checkout form validation', () => {
     await expect(page).toHaveURL(routes.checkoutOverview);
   });
 
-  test('Cart contents are kept after a validation error and Cancel', async ({
+  test('Cart contents are kept after a validation error and Cancel', { tag: '@smoke' }, async ({
     page,
     checkoutInformationPage,
     cartPage,
